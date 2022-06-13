@@ -1,4 +1,5 @@
-import 'package:counter_cubit/cubits/counter_cubit.dart';
+
+import 'package:counter_cubit/blocs/bloc/counter_bloc.dart';
 import 'package:counter_cubit/other_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -12,8 +13,8 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider<CounterCubit>(
-      create: (context) => CounterCubit(),
+    return BlocProvider<CounterBloc>(
+      create: (context) => CounterBloc(),
       child: MaterialApp(
         title: 'My Counter Cubit',
         debugShowCheckedModeBanner: false,
@@ -32,7 +33,7 @@ class MyHomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: BlocConsumer<CounterCubit, CounterState>(
+      body: BlocConsumer<CounterBloc, CounterState>(
         listener: (context, state) {
           if (state.counter == -1) {
             Navigator.push(context, MaterialPageRoute(builder: (context) {
@@ -51,7 +52,7 @@ class MyHomePage extends StatelessWidget {
         builder: (context, state) {
           return Center(
             child: Text(
-              '${state.counter}',
+              '${context.watch<CounterBloc>().state.counter}',
               style: TextStyle(fontSize: 52.0),
             ),
           );
@@ -62,7 +63,7 @@ class MyHomePage extends StatelessWidget {
         children: [
           FloatingActionButton(
             onPressed: () {
-              BlocProvider.of<CounterCubit>(context).increment();
+              BlocProvider.of<CounterBloc>(context).add(IncrementCounterEvent());
             },
             child: Icon(Icons.add),
             heroTag: 'increment',
@@ -70,7 +71,7 @@ class MyHomePage extends StatelessWidget {
           SizedBox(width: 10.0),
           FloatingActionButton(
             onPressed: () {
-              context.read<CounterCubit>().decrement();
+              context.read<CounterBloc>().add(DecrementCounterEvent());
             },
             child: Icon(Icons.remove),
             heroTag: 'decrement',
@@ -80,4 +81,3 @@ class MyHomePage extends StatelessWidget {
     );
   }
 }
-
